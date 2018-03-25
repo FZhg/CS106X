@@ -1,0 +1,12 @@
+# jzelenski
+# This is a very simple colony, good for a first test case. 
+# It is a 5x5 world, with no live cells on the boarder and
+# length 3 bar in the middle that will alternate between
+# horizontal and vertical.
+5
+5
+-----
+-----
+-XXX-
+-----
+-----
