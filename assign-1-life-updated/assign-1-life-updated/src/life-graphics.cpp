@@ -26,7 +26,7 @@ LifeDisplay::LifeDisplay() : window(kDisplayWidth, kDisplayHeight) {
     initializeColors();
     window.setVisible(true);
     window.setWindowTitle(kDefaultWindowTitle);
-    window.setRepaintImmediately(false);
+    window.setRepaintImmediately(true);
 }
 
 LifeDisplay::~LifeDisplay() {
@@ -44,6 +44,7 @@ void LifeDisplay::setDimensions(int numRows, int numColumns) {
     computeGeometry();
     window.clear();
     window.setColor("White");
+    window.drawLine(0, 0, 100, 100);
     window.fillRect(0, 0, kDisplayWidth, kDisplayHeight);
     window.setColor("Black");
     window.drawRect(upperLeftX, upperLeftY,
