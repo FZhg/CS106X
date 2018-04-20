@@ -22,7 +22,10 @@ struct cell {
 inline bool operator<(const cell& one, const cell& two) {
     return one.row < two.row || (one.row == two.row && one.col < two.col);
 }
-    
+
+inline bool operator!=(const cell& one, const cell& two) {
+	return (one.row != two.row) || (one.col != two.col);
+}
 /**
  * A wall within a maze is described by the two cells
  * it separates.  It's the responsibility of the programmer

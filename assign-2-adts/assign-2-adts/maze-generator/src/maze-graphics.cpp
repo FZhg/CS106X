@@ -28,7 +28,7 @@ MazeGeneratorView::MazeGeneratorView() : GWindow(kWindowWidth, kWindowHeight) {
     uly = (getHeight() - kMazeSize)/2;
     setWindowTitle(kWindowTitle);
     setVisible(true);
-    setRepaintImmediately(false);
+    setRepaintImmediately(true);
 }
 
 MazeGeneratorView::~MazeGeneratorView() {
