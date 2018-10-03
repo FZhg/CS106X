@@ -1,0 +1,5 @@
+# Test for a single replacement
+First:    ACGT
+Second:   ACTT
+Distance: 1
+Result:   true

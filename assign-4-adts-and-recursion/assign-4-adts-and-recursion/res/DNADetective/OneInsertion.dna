@@ -1,0 +1,5 @@
+# Test for a single insertion
+First:    ACGT
+Second:   ACT
+Distance: 1
+Result:   true

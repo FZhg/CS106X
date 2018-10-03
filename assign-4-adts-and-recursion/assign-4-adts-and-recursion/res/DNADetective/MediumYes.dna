@@ -1,0 +1,11 @@
+# A medium-difficulty test case.
+#
+# The fastest transformation looks like this:
+#
+#   GATTACA -> GAGTTACA -> GAGATACA -> GAGATACT
+#
+# which has three steps.
+First:    GATTACA
+Second:   GAGATACT
+Distance: 3
+Result:   true

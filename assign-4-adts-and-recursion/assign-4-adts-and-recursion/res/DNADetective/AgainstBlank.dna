@@ -1,0 +1,5 @@
+# Edge case: converting a blank string to a non-blank one.
+First:    
+Second:   GAGATACT
+Distance: 8
+Result:   true

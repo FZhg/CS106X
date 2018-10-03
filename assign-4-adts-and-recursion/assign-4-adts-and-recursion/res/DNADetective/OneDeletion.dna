@@ -1,0 +1,5 @@
+# Test for a single deletion
+First:    ACT
+Second:   ACGT
+Distance: 1
+Result:   true

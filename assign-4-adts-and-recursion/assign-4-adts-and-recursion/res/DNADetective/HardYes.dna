@@ -1,0 +1,5 @@
+# And a hard one!
+First:    ACTGTACTGACTGACTG
+Second:   CATGCATGACTATGCATC
+Distance: 9
+Result:   true

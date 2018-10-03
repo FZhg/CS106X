@@ -1,0 +1,5 @@
+# Simple test to make sure that exact matches work
+First:    GATTACA
+Second:   GATTACA
+Distance: 0
+Result:   true

@@ -1,0 +1,8 @@
+# This test case has a number of cities linked in a ring.
+
+Das Rheingold (-1, -1): Die Walkure, Sigfried
+Die Walkure (-1, 1): Das Rheingold, Gotterdammerung
+Sigfried (1, -1): Das Rheingold, Gotterdammerung
+Gotterdammerung (1, 1): Die Walkure, Sigfried
+
+Solution: 2
