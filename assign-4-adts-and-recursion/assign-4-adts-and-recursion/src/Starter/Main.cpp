@@ -96,7 +96,7 @@ namespace {
     const int kMaxElectionYear = 2016;
 
     /* Prompts the user for an election year, reprompting as necessary. */
-    int chooseYear() {X
+    int chooseYear() {
         while (true) {
             int year = getInteger("Enter an election year (" + to_string(kMinElectionYear) + " - " + to_string(kMaxElectionYear) + "): ");
             if (year >= kMinElectionYear && year <= kMaxElectionYear && year % 4 == 0) {

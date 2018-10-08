@@ -301,7 +301,7 @@ MinInfo getVElecVotesByminPopVotes(const Vector<State> &states,
     int newElecVotes = V - stateTobeAdded.electoralVotes;
     MinInfo preResult;
     if(newElecVotes < 0){
-        preResult = getVElecVotesByminPopVotes(states, stateStartIndex + 1, 1, table);
+        preResult = getVElecVotesByminPopVotes(states, stateStartIndex + 1, 1, table); // we only need 1 1 electoral vote to fulfill the condition
     } else{
         preResult = getVElecVotesByminPopVotes(states, stateStartIndex + 1, newElecVotes, table);
     }
