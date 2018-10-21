@@ -11,6 +11,8 @@
 #include "hashset.h"
 #include "random.h"
 #include "console.h"
+#include "min-heap.h"
+#include "sorted-double-linked-list.h"
 using namespace std;
 
 /**
@@ -58,7 +60,10 @@ static void extractElements(PQueue::PQueueType pqtype, PQueue *pq) {
     int numExtractionsExpected = pq->size();
 	while (!pq->isEmpty()) {
 		string next = pq->extractMin();
-		if (next < leastSoFar) error("Priority Queue is returning elements in the wrong order.");
+        if (next < leastSoFar){
+            cout << next << " " << leastSoFar << endl;
+            error("Priority Queue is returning elements in the wrong order.");
+        }
 		leastSoFar = next;
 		count++;
 		if (count % 1000 == 0) {
@@ -192,10 +197,106 @@ static const struct {
     int reasonableTestSize;
 } testParameters[] = {
     { PQueue::UnsortedVector, 10000},
-    { PQueue::Heap, INT_MAX},
+    { PQueue::Heap, INT8_MAX},
     { PQueue::LinkedList, 10000},
-    { PQueue::BinomialHeap, INT_MAX}
+    { PQueue::BinomialHeap, INT8_MAX}
 };
+
+/**
+ * @brief testMinHeap test MinHeap class
+ * @param testcase
+ */
+static void testMinHeap(const Vector<int>& testcase){
+    cout << "**************************************************" << endl;
+    cout << "test for MinHeap Class" << endl;
+
+    cout << "Test for Method: insert" << endl;
+    cout <<"Input:" <<testcase << endl;
+    MinHeap<int> *minheap = new MinHeap<int>(20);
+    minheap->insertAll(testcase);
+    cout << "Output:";
+    minheap->display();
+    minheap->testMinHeapity();
+    cout << "Test for Method: extractMin" << endl;
+    while (!minheap->isEmpty()) {
+        minheap->testMinHeapity();
+        minheap->display();
+        minheap->extractMin();
+    }
+    cout << "**************************************************" << endl;
+
+}
+
+static void runTestMinHeap(){
+    const Vector<int> testcase0 = {22, 11, 10, 9};
+    testMinHeap(testcase0);
+    const Vector<int> testcase1 = { 22, 11, 10, 9, 8 , 7, 6, 5, 6, 1, 2, 4};
+    testMinHeap(testcase1);
+    const Vector<int> testcase2 = { 1, 1, 1,1 ,1 ,1, 1,1 ,1, 1, 1,1 ,1, 1, 1, 1};
+    testMinHeap(testcase2);
+    Vector<int> testcase3;
+    for(int i = 30; i > 0; i --){
+        testcase3.add(i);
+    }
+    testMinHeap(testcase3);
+}
+
+/**
+ * @brief testMinHeap test MinHeap class
+ * @param testcase
+ */
+static void testSortedDoubleLinkedList(const Vector<int>& testcase){
+    cout << "**************************************************" << endl;
+    cout << "test for SortedDoubleLinkedList  Class" << endl;
+
+    cout << "Test for Method: insert" << endl;
+    cout <<"Input:" <<testcase << endl;
+    SortedDoubleLinkedList<int> *sdll = new SortedDoubleLinkedList<int>;
+    sdll->insertAll(testcase);
+    cout << "Output:";
+    sdll->display();
+    cout << "Test for sortedness" << endl;
+//    sdll->testSortedness();
+    cout << "Test for Method: remove(0)" << endl;
+    while (!sdll->isEmpty()) {
+        sdll->display();
+        sdll->remove(0);
+    }
+    cout << "**************************************************" << endl;
+
+}
+
+static void runTestSortedDoubleLinkedList(){
+//    const Vector<int> testcase0 = {22, 11, 10, 9};
+//    testSortedDoubleLinkedList(testcase0);
+//    const Vector<int> testcase1 = { 22, 11, 10, 9, 8 , 7, 6, 5, 6, 1, 2, 4};
+//    testSortedDoubleLinkedList(testcase1);
+//    const Vector<int> testcase2 = { 1, 1, 1,1 ,1 ,1, 1,1 ,1, 1, 1,1 ,1, 1, 1, 1};
+//    testSortedDoubleLinkedList(testcase2);
+//    Vector<int> testcase3;
+//    for(int i = 30; i > 0; i --){
+//        testcase3.add(i);
+//    }
+//    testSortedDoubleLinkedList(testcase3);
+//    Vector<int> testcase4;
+//    for(int i = 23; i > 0; i --){
+//        testcase4.add(rand() % 23);
+//    }
+//    testSortedDoubleLinkedList(testcase4);
+//    const Vector<int> testcase5 = {11, 0, 6, 2, 6, 0, 14, 1, 11, 1, 17, 16};
+//    testSortedDoubleLinkedList(testcase5);
+    cout << "Merged Test" << endl;
+    const Vector<int> testcaseMerge1 = {22, 11, 10, 9};
+    SortedDoubleLinkedList<int> *sdll1 = new SortedDoubleLinkedList<int>;
+    sdll1->insertAll(testcaseMerge1);
+    sdll1->display();
+    const Vector<int> testcaseMerge2 = {22, 11, 10, 9};
+    SortedDoubleLinkedList<int> *sdll2 = new SortedDoubleLinkedList<int>;
+    sdll2->insertAll(testcaseMerge1);
+    sdll2->display();
+    SortedDoubleLinkedList<int> *sdll = SortedDoubleLinkedList<int>::merge(*sdll1, *sdll2);
+    sdll->display();
+}
 
 /**
  * Function: runAllTests
@@ -204,14 +305,14 @@ static const struct {
  */
 static void runAllTests() {
     Lexicon english("dictionary.txt");
-    for (unsigned long i = 0; i < sizeof(testParameters)/sizeof(*testParameters); i++) {
-		cout << "Exercising the " << PQueue::typeToName(testParameters[i].type) << endl;
-		cout << "---------------" << string(PQueue::typeToName(testParameters[i].type).size(), '-') << endl;
-		sortedTest(testParameters[i].type, english, testParameters[i].reasonableTestSize);
-		scrambleTest(testParameters[i].type, english, testParameters[i].reasonableTestSize);
-		randomizedTest(testParameters[i].type, testParameters[i].reasonableTestSize);
-		mergeTest(testParameters[i].type, english, testParameters[i].reasonableTestSize / 10);
-		cout << endl;
+////    for (unsigned long i = 0; i < sizeof(testParameters)/sizeof(*testParameters); i++) {
+    for (unsigned long i = 2; i < sizeof(testParameters)/sizeof(*testParameters) - 1; i++) {
+        cout << "Exercising the " << PQueue::typeToName(testParameters[i].type) << endl;
+        cout << "---------------" << string(PQueue::typeToName(testParameters[i].type).size(), '-') << endl;
+        sortedTest(testParameters[i].type, english, testParameters[i].reasonableTestSize);
+        scrambleTest(testParameters[i].type, english, testParameters[i].reasonableTestSize);
+        randomizedTest(testParameters[i].type, testParameters[i].reasonableTestSize);
+        mergeTest(testParameters[i].type, english, testParameters[i].reasonableTestSize / 10);
     }
 }
 

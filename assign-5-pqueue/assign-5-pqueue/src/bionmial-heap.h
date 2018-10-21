@@ -1,0 +1,4 @@
+#ifndef BIONMIALHEAP_H
+#define BIONMIALHEAP_H
+
+#endif // BIONMIALHEAP_H

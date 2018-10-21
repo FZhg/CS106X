@@ -1,6 +1,7 @@
 #pragma once
 #include "pqueue.h"
 #include <string>
+#include "sorted-double-linked-list.h"
 
 class LinkedListPQueue : public PQueue {
 public:
@@ -16,4 +17,5 @@ public:
 private:
 	// provide data methods and helper methods to
     // help realize the linked list-backed PQueue
+    SortedDoubleLinkedList<std::string> *sdll;
 };

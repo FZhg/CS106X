@@ -88,7 +88,7 @@ public:
  * provided here is always correct.
  */
 	
-	int size() const { return logSize; }
+    int size() const { return logSize; }
 
 /**
  * Returns true if and only if the PQueue is empty.  Self-explanatory,

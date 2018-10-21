@@ -151,7 +151,10 @@ win32 {
 # out SOURCES, so that the Qt Creator .pro modification is ineffectual.
 DISTFILES *= ""
 DISTFILES = ""
-HEADERS *= ""
+HEADERS *= "" \
+    src/min-heap.h \
+    src/sorted-double-linked-list.h \
+    src/bionmial-heap.h
 HEADERS = ""
 SOURCES *= ""
 SOURCES = ""
