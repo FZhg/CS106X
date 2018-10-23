@@ -1,28 +1,32 @@
 #include "pqueue-binomial-heap.h"
 using namespace std;
 
-BinomialHeapPQueue::BinomialHeapPQueue() {}
-BinomialHeapPQueue::~BinomialHeapPQueue() {}
+BinomialHeapPQueue::BinomialHeapPQueue() {
+    bnheap = new BinomialMinHeap<string>();
+}
+BinomialHeapPQueue::~BinomialHeapPQueue() {
+    bnheap->~BinomialMinHeap();
+}
 
 const string& BinomialHeapPQueue::peek() const {
-    // placeholder so method compiles..
-	// replace with your own implementation
-    return kEmptyString;
+    return bnheap->peek();
 }
 
 string BinomialHeapPQueue::extractMin() {
-	// placeholder so method compiles..
-	// replace with your own implementation
-	return peek();
+    logSize --;
+    return bnheap->extractMin();
 }
 
-void BinomialHeapPQueue::enqueue(const string& /* elem */) {
-    // placeholder so method compiles..
-	// replace with your own implementation
+void BinomialHeapPQueue::enqueue(const string& elem) {
+    logSize ++;
+    return bnheap->insert(elem);
 }
 
-BinomialHeapPQueue *BinomialHeapPQueue::merge(BinomialHeapPQueue */* one */, BinomialHeapPQueue * /* two */) {
-	// placeholder so method compiles..
-	// replace with your own implementation
-	return new BinomialHeapPQueue();
+BinomialHeapPQueue *BinomialHeapPQueue::merge(BinomialHeapPQueue * one, BinomialHeapPQueue * two) {
+    BinomialHeapPQueue *bnheapPQueueTotoal = new BinomialHeapPQueue();
+    bnheapPQueueTotoal->logSize = one->logSize + two->logSize;
+    bnheapPQueueTotoal->bnheap = BinomialMinHeap<string>::merge(*(one->bnheap), *(two->bnheap));
+    one->~BinomialHeapPQueue();
+    two->~BinomialHeapPQueue();
+    return bnheapPQueueTotoal;
 }

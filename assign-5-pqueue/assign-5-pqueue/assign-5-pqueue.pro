@@ -154,7 +154,7 @@ DISTFILES = ""
 HEADERS *= "" \
     src/min-heap.h \
     src/sorted-double-linked-list.h \
-    src/bionmial-heap.h
+    src/binomial-heap.h
 HEADERS = ""
 SOURCES *= ""
 SOURCES = ""

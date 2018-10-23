@@ -13,6 +13,7 @@
 #include "console.h"
 #include "min-heap.h"
 #include "sorted-double-linked-list.h"
+#include "binomial-heap.h"
 using namespace std;
 
 /**
@@ -267,24 +268,24 @@ static void testSortedDoubleLinkedList(const Vector<int>& testcase){
 }
 
 static void runTestSortedDoubleLinkedList(){
-//    const Vector<int> testcase0 = {22, 11, 10, 9};
-//    testSortedDoubleLinkedList(testcase0);
-//    const Vector<int> testcase1 = { 22, 11, 10, 9, 8 , 7, 6, 5, 6, 1, 2, 4};
-//    testSortedDoubleLinkedList(testcase1);
-//    const Vector<int> testcase2 = { 1, 1, 1,1 ,1 ,1, 1,1 ,1, 1, 1,1 ,1, 1, 1, 1};
-//    testSortedDoubleLinkedList(testcase2);
-//    Vector<int> testcase3;
-//    for(int i = 30; i > 0; i --){
-//        testcase3.add(i);
-//    }
-//    testSortedDoubleLinkedList(testcase3);
-//    Vector<int> testcase4;
-//    for(int i = 23; i > 0; i --){
-//        testcase4.add(rand() % 23);
-//    }
-//    testSortedDoubleLinkedList(testcase4);
-//    const Vector<int> testcase5 = {11, 0, 6, 2, 6, 0, 14, 1, 11, 1, 17, 16};
-//    testSortedDoubleLinkedList(testcase5);
+    const Vector<int> testcase0 = {22, 11, 10, 9};
+    testSortedDoubleLinkedList(testcase0);
+    const Vector<int> testcase1 = { 22, 11, 10, 9, 8 , 7, 6, 5, 6, 1, 2, 4};
+    testSortedDoubleLinkedList(testcase1);
+    const Vector<int> testcase2 = { 1, 1, 1,1 ,1 ,1, 1,1 ,1, 1, 1,1 ,1, 1, 1, 1};
+    testSortedDoubleLinkedList(testcase2);
+    Vector<int> testcase3;
+    for(int i = 30; i > 0; i --){
+        testcase3.add(i);
+    }
+    testSortedDoubleLinkedList(testcase3);
+    Vector<int> testcase4;
+    for(int i = 23; i > 0; i --){
+        testcase4.add(rand() % 23);
+    }
+    testSortedDoubleLinkedList(testcase4);
+    const Vector<int> testcase5 = {11, 0, 6, 2, 6, 0, 14, 1, 11, 1, 17, 16};
+    testSortedDoubleLinkedList(testcase5);
     cout << "Merged Test" << endl;
     const Vector<int> testcaseMerge1 = {22, 11, 10, 9};
     SortedDoubleLinkedList<int> *sdll1 = new SortedDoubleLinkedList<int>;
@@ -298,6 +299,45 @@ static void runTestSortedDoubleLinkedList(){
     sdll->display();
 }
 
+static void testBinomialMinHeap(const Vector<int>& testcase){
+    cout << "**************************************************" << endl;
+    cout << "Test for BinomialMinHeap Class" << endl;
+
+    cout << "Test for Method: insert" << endl;
+    cout <<"Input:" << testcase << endl;
+    BinomialMinHeap<int> *bnheap = new BinomialMinHeap<int>;
+    bnheap->insertAll(testcase);
+    cout << "Output:" << endl;
+    bnheap->display();
+
+    cout << "Test for Method: extractMin" << endl;
+    while (!bnheap->isEmpty()) {
+        bnheap->display();
+        bnheap->extractMin();
+    }
+    bnheap->display();
+    cout << "**************************************************" << endl;
+}
+
+static void runTestBinomialMinHeap(){
+    const Vector<int> testcase0 = {15, 45};
+    testBinomialMinHeap(testcase0);
+    const Vector<int> testcase1 = {15, 45, 13, 22, 78, 80, 35, 96, 62, 49, 50};
+    testBinomialMinHeap(testcase1);
+    cout << "Test for Method: merge" << endl;
+    BinomialMinHeap<int> bnheap1 = BinomialMinHeap<int>();
+    BinomialMinHeap<int> bnheap2 = BinomialMinHeap<int>();
+    const Vector<int> testcaseMerge1 = {43, 56, 89, 123, 8, 5};
+    const Vector<int> testcaseMerge2 = {22, 3, 5, 65,  2};
+    bnheap1.insertAll(testcaseMerge1);
+    bnheap1.display();
+    bnheap2.insertAll(testcaseMerge2);
+    bnheap2.display();
+    BinomialMinHeap<int> *bnheapTotal = BinomialMinHeap<int>::merge(bnheap1, bnheap2);
+    bnheapTotal->display();
+}
+
+
 /**
  * Function: runAllTests
  * ---------------------
@@ -306,7 +346,7 @@ static void runTestSortedDoubleLinkedList(){
 static void runAllTests() {
     Lexicon english("dictionary.txt");
 ////    for (unsigned long i = 0; i < sizeof(testParameters)/sizeof(*testParameters); i++) {
-    for (unsigned long i = 2; i < sizeof(testParameters)/sizeof(*testParameters) - 1; i++) {
+    for (unsigned long i = 3; i < sizeof(testParameters)/sizeof(*testParameters); i++) {
         cout << "Exercising the " << PQueue::typeToName(testParameters[i].type) << endl;
         cout << "---------------" << string(PQueue::typeToName(testParameters[i].type).size(), '-') << endl;
         sortedTest(testParameters[i].type, english, testParameters[i].reasonableTestSize);
