@@ -10,6 +10,7 @@
 #include "exp.h"
 #include "parser.h"
 #include "strlib.h"
+#include "ssmodel.h"
 #include "tokenscanner.h"
 using namespace std;
 

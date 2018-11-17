@@ -8,12 +8,9 @@
 #define _exp_
 
 #include <string>
-#include "map.h"
+#include "ssmodel.h"
+#include "cell.h"
 #include "tokenscanner.h"
-
-/* Forward reference */
-
-class EvaluationContext;
 
 /*
  * Type: ExpressionType
@@ -67,13 +64,13 @@ public:
 
 /**
  * Method: eval
- * Usage: int value = exp->eval(context);
+ * Usage: int value = exp->eval(model);
  * --------------------------------------
- * Evaluates this expression and returns its value in the context of
- * the specified EvaluationContext object.
+ * Evaluates this expression and returns its value in the to of
+ * the specified SSmodel object.
  */
 
-   virtual double eval(EvaluationContext& context) const = 0;
+   virtual double eval(SSModel& model, Cell* newCell) const = 0;
 
 /**
  * Method: toString
@@ -116,7 +113,7 @@ public:
 
 /* Prototypes for the virtual methods overridden by this class */
 
-   double eval(EvaluationContext& context) const;
+   double eval(SSModel& /*model*/, Cell* newCell) const;
    std::string toString() const;
    ExpressionType getType() const;
     
@@ -148,7 +145,7 @@ public:
     
 /* Prototypes for the virtual methods overridden by this class */
     
-    double eval(EvaluationContext& context) const;
+    double eval(SSModel& /*model*/, Cell* /* newCell */) const;
     std::string toString() const;
     ExpressionType getType() const;
 
@@ -179,14 +176,18 @@ public:
    IdentifierExp(const std::string& name);
 
 /* Prototypes for the virtual methods overridden by this class */
-
-   double eval(EvaluationContext& context) const;
+   /**
+    * Method: eval
+    * Usage: exp.eval()
+    * --------------------
+    * Return the value in the indentifier.
+    */
+   double eval(SSModel& model, Cell* newCell) const;
    std::string toString() const;
    ExpressionType getType() const;
 
 /* Prototypes of methods specific to this class */
    std::string getIdentifierName() const;
-
 private:
    std::string name;            /* The name of the identifier */
 };
@@ -215,7 +216,7 @@ public:
 /* Prototypes for the virtual methods overridden by this class */
 
    virtual ~CompoundExp();
-   virtual double eval(EvaluationContext& context) const;
+   virtual double eval(SSModel& model, Cell* newCell) const;
    virtual std::string toString() const;
    virtual ExpressionType getType() const;
 
@@ -229,46 +230,5 @@ private:
    const Expression *lhs, *rhs; /* The left and right subexpression  */
 };
 
-/**
- * Class: EvaluationContext
- * ------------------------
- * This class encapsulates the information that the evaluator needs to
- * know in order to evaluate an expression.
- */
-
-class EvaluationContext {
-
-public:
-
-/**
- * Method: setValue
- * Usage: context.setValue(var, value);
- * ------------------------------------
- * Sets the value associated with the specified var.
- */
-
-   void setValue(const std::string& var, double value);
-
-/**
- * Method: getValue
- * Usage: int value = context.getValue(var);
- * -----------------------------------------
- * Returns the value associated with the specified variable.
- */
-
-   double getValue(const std::string& var) const;
-
-/**
- * Method: isDefined
- * Usage: if (context.isDefined(var)) . . .
- * ----------------------------------------
- * Returns true if the specified variable is defined.
- */
-
-   bool isDefined(const std::string& var) const;
-
-private:
-   Map<std::string, double> symbolTable;
-};
 
 #endif

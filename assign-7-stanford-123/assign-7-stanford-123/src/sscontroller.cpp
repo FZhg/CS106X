@@ -21,7 +21,12 @@
 #include "ssmodel.h"
 #include "ssview.h"
 #include "console.h"
+#include "set.h"
+#include "string.h"
 using namespace std;
+
+/* Prototypes */
+static void setAction(TokenScanner& scanner, SSModel& model);
 
 /**
  * General implementation notes
@@ -49,14 +54,29 @@ typedef void (*cmdFnT)(TokenScanner& scanner, SSModel& model);
  * then acting on the command by sending the appropriate message to the model.
  */
 
+static void loadCommand(SSModel& model, string& command, string& cmdName){
+    Set<string> unrecorded = Set<string>{"quit", "save", "load", "help",  "get"};
+    if(!unrecorded.contains(cmdName)){
+        model.addCommand(command);
+    }
+}
+
+static void rmWrongCommand(SSModel& model, string& cmdName){
+    Set<string> unrecorded = Set<string>{"quit", "save", "load", "help",  "get"};
+    if(!unrecorded.contains(cmdName)){
+        model.rmLastCommand();
+    }
+}
+
 static const int kLeftColumnWidth = 22;
 static void helpAction(TokenScanner& /* scanner */, SSModel& /* model */) {
 	cout << left << setw(kLeftColumnWidth) 
          << "help" << "Print this menu of commands" << endl;
 	cout << left << setw(kLeftColumnWidth) 
-         << "load <filename>" << "Read named file into spreadsheet" << endl;
+         << "load <filename>.123" << "Read named file into spreadsheet." << endl;
+    cout << "Warning:[close the current spreadsheet without saving]" << endl;
 	cout << left << setw(kLeftColumnWidth) 
-         << "save <filename>" << "Save current spreadsheet to named file" << endl;
+         << "save <filename>.123" << "Save current spreadsheet to named file" << endl;
 	cout << left << setw(kLeftColumnWidth) 
          << "set <cell> = <value>" 
          << "Set cell to value. Value can be \"string\" or formula" << endl;
@@ -70,21 +90,30 @@ static void helpAction(TokenScanner& /* scanner */, SSModel& /* model */) {
 static void loadAction(TokenScanner& scanner, SSModel& model) {
 	if (!scanner.hasMoreTokens()) 
         error("The load command requires a file name.");
-	
+    model.clear(); // to clear previous commands without saving!
     string filename;
-	while (scanner.hasMoreTokens())
-		filename += scanner.nextToken();
+    while (scanner.hasMoreTokens()){
+        filename += scanner.nextToken();
+    }
 	ifstream infile(filename.c_str());
 	if (infile.fail()) 
         error("Cannot open the file named \"" + filename + "\".");
-	model.readFromStream(infile);
+    string line;
+    while(getline(infile, line)){
+        model.addCommand("set" + line); // add the current command to the model.
+        TokenScanner cmdScanner(line);
+        cmdScanner.ignoreWhitespace();
+        cmdScanner.scanNumbers();
+        cmdScanner.scanStrings();
+        setAction(cmdScanner, model); // execute each command at a time
+    }
+    infile.close();
 	cout << "Loaded file \"" << filename << "\"." << endl;
 }
 
 static void saveAction(TokenScanner& scanner, SSModel& model) {
 	if (!scanner.hasMoreTokens()) 
         error("The save command requires a file name.");
-    
 	string filename;
 	while (scanner.hasMoreTokens())
         filename += scanner.nextToken();
@@ -92,6 +121,7 @@ static void saveAction(TokenScanner& scanner, SSModel& model) {
 	if (out.fail()) 
         error("Cannot open the file named \"" + filename + "\".");
 	model.writeToStream(out);
+    out.close();
 	cout << "Saved file \"" << filename << "\"." << endl;
 }
 
@@ -99,6 +129,7 @@ static void setAction(TokenScanner& scanner, SSModel& model) {
 	if (!scanner.hasMoreTokens()) 
         error("The set command requires a cell name and a value.");
 	string cellname = scanner.nextToken();
+    toLowerCaseInPlace(cellname);
 	if (!model.nameIsValid(cellname)) 
         error("Invalid cell name " + cellname);
 	if (scanner.nextToken() != "=") 
@@ -160,8 +191,8 @@ static void setUpCommandTable(Map<string, cmdFnT>& table) {
 
 static void interpretCommands(Map<string, cmdFnT>& cmdTable) {
 	SSView view;
-	SSModel model(kNumRowsDisplayed, kNumColsDisplayed, &view);
-	TokenScanner scanner;
+    SSModel model(kNumRowsDisplayed, kNumColsDisplayed, &view);
+    TokenScanner scanner;
 	scanner.ignoreWhitespace();
 	scanner.scanNumbers();
 	scanner.scanStrings();
@@ -170,17 +201,21 @@ static void interpretCommands(Map<string, cmdFnT>& cmdTable) {
          << endl << endl;
 	while (true) {
 		string command = getLine("Enter command: ");
+        toLowerCase(command); //case insensitive
 		scanner.setInput(command);
         string cmdName = toLowerCase(trim(scanner.nextToken()));
 		if (!cmdTable.containsKey(cmdName)) {
 			cout << "Unrecognized command \"" + cmdName 
             << "\". Type \"help\" for list of commands." << endl;
 		} else {
+            loadCommand(model, command, cmdName);
 			try {
 				cmdTable[cmdName](scanner, model);
 			} catch (ErrorException ex) {
 				cout << "Error in " << cmdName << " command: " 
                 << ex.getMessage() << endl;
+                rmWrongCommand(model, cmdName);
+                // this command generates an error thus can not be recorded
 			} 
 		}
 	}

@@ -8,6 +8,7 @@
 #include "exp.h"
 #include "strlib.h"
 #include "error.h"
+#include "ssmodel.h"
 using namespace std;
 
 /**
@@ -36,7 +37,8 @@ DoubleExp::DoubleExp(double value) {
    this->value = value;
 }
 
-double DoubleExp::eval(EvaluationContext& /* context */) const {
+double DoubleExp::eval(SSModel& /*model*/, Cell* newCell) const {
+    newCell->setNumData(value);
    return value;
 }
 
@@ -63,7 +65,7 @@ TextStringExp::TextStringExp(const string& str) {
     this->str = str;
 }
 
-double TextStringExp::eval(EvaluationContext& /* context */) const {
+double TextStringExp::eval(SSModel& /*model*/, Cell* /* newCell */) const {
     return 0.0;
 }
 
@@ -84,15 +86,23 @@ string TextStringExp::getTextStringValue() const {
  * -----------------------------------
  * The IdentifierExp subclass represents a variable name.  The
  * implementation of eval looks up that name in the evaluation context.
+ * Preconditions: the name must be valid spreadsheet cellname and can be empty.
+ * Postcondistions: when retrived, the value of an empty or string cell will be zero.
  */
 
 IdentifierExp::IdentifierExp(const string& name) {
    this->name = name;
 }
 
-double IdentifierExp::eval(EvaluationContext& context) const {
-   if (!context.isDefined(name)) error(name + " is undefined");
-   return context.getValue(name);
+double IdentifierExp::eval(SSModel& model, Cell* newCell) const {
+    if(!model.nameIsValid(name)){
+        error("cellname" + name + "is not valid");
+    }
+    //add depending for the newCell
+    newCell->addDepending(model.getCell(name));
+    //add depended for identifier
+    model.getCell(name)->addDepended(newCell);
+    return model.getNumValue(name);
 }
 
 string IdentifierExp::toString() const {
@@ -106,6 +116,7 @@ ExpressionType IdentifierExp::getType() const {
 string IdentifierExp::getIdentifierName() const {
    return name;
 }
+
 
 /**
  * Implementation notes: CompoundExp
@@ -126,9 +137,9 @@ CompoundExp::~CompoundExp() {
    delete rhs;
 }
 
-double CompoundExp::eval(EvaluationContext & context) const {
-   double right = rhs->eval(context);
-   double left = lhs->eval(context);
+double CompoundExp::eval(SSModel& model, Cell* newCell) const {
+   double right = rhs->eval(model, newCell);
+   double left = lhs->eval(model, newCell);
    if (op == "+") return left + right;
    if (op == "-") return left - right;  
    if (op == "*") return left * right;
@@ -156,23 +167,4 @@ const Expression *CompoundExp::getLHS() const {
 
 const Expression *CompoundExp::getRHS() const {
    return rhs;
-}
-
-/**
- * Implementation notes: EvaluationContext
- * ---------------------------------------
- * The methods in the EvaluationContext class simply call the appropriate
- * method on the map used to represent the symbol table.
- */
-
-void EvaluationContext::setValue(const string& var, double value) {
-   symbolTable.put(var, value);
-}
-
-double EvaluationContext::getValue(const string& var) const {
-   return symbolTable.get(var);
-}
-
-bool EvaluationContext::isDefined(const string& var) const {
-   return symbolTable.containsKey(var);
 }

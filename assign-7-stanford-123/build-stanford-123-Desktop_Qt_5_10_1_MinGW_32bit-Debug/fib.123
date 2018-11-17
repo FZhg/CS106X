@@ -1,0 +1,35 @@
+A1 = "FIBONACCI"
+a3 = "Fib(0) ="
+b3 = 0
+a4 = "Fib(1) ="
+b4 = 1
+a5 = "Fib(2) ="
+b5 = b3 + b4
+a6 = "Fib(3) ="
+b6 = b4 + b5
+a7 = "Fib(4) ="
+b7 = b5 + b6 
+a8 = "Fib(5) ="
+b8 = b6 + b7
+a9 = "Fib(6) ="
+b9 = b7 + b8
+a10 = "Fib(7) ="
+b10 = b8 + b9
+a11 ="Fib(8) ="
+b11 = b9 + b10
+a12 ="Fib(9) ="
+b12 = b10 + b11
+a13 ="Fib(10) ="
+b13 = b11 + b12
+a14 ="Fib(11) ="
+b14 = b12 + b13
+a15 ="Fib(12) ="
+b15 = b13 + b14
+c1 = "Change the"
+d1 = "value of B3"
+e1 = "and watch"
+f1 = "everything"
+g1 = "update!"
+d3 = "Average of"
+d4 = "B3:B15"
+e4 = AVERAGE(b3:b15)

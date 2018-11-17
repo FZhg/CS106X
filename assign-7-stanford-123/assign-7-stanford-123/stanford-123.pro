@@ -154,10 +154,12 @@ DISTFILES = ""
 HEADERS *= "" \
     src/graphs.h \
     src/graph-display.h \
-    src/graph-constants.h
+    src/graph-constants.h \
+    src/cell.h
 HEADERS = ""
 SOURCES *= "" \
-    src/graph-display.cpp
+    src/graph-display.cpp \
+    src/cell.cpp
 SOURCES = ""
 
 # include various source .cpp files and header .h files in the build process

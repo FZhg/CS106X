@@ -9,6 +9,9 @@
 #include <string>
 #include "tokenscanner.h"
 #include "ssview.h"
+#include "cell.h"
+#include "vector.h"
+#include "hashmap.h"
 
 /**
  * This is a "forward reference" which informs the compiler there is a
@@ -20,7 +23,10 @@
 class Expression;
 
 /**
- * Class: SSModel
+
+  //TO-DO: user input tolerance, impelement a buffer, if not mistake then make changes
+  //       to current model.
+* Class: SSModel
  * --------------
  * This is the starting interface for the spreadsheet data model class.  The 
  * public member functions listed here are used by other parts of the given code 
@@ -76,7 +82,7 @@ public:
   * and its dependent cells are updated as well.
   */
 	
-    void setCellFromScanner(const std::string& cellname, TokenScanner& scanner);
+    void setCellFromScanner(std::string& cellname, TokenScanner& scanner);
 
 /**
  * Member function: printCellInformation
@@ -107,9 +113,111 @@ public:
  */
 
     void writeToStream(std::ostream &outfile) const;
-	void readFromStream(std::istream &infile);
+
+    /**
+     * Method: clear
+     * Usage: model.clear();
+     * ---------------------
+     * Clear the current model.
+     */
+    void clear();
+
+    /**
+     * Method: isEmptyCell
+     * Usage: model.isEmptyCell(cellname);
+     * -----------------------------------
+     * Return true if the cell is empty.
+     */
+    bool isNonEmptyCell(std::string& cellname) const;
+
+    /**
+     * Method: getValue
+     * Usage: model.getValue(cellname);
+     * ---------------------------------
+     * Return the value of the Cell responding to the cellname;
+     */
+    double getNumValue(const std::string& cellname) const;
+
+    /**
+     * Method setNumValue
+     * Usage: model.setNumValue(cellname, newNumData);
+     * -----------------------------------------------
+     * Preconditions:
+     * only called by clients when the cell  is to accept a
+     * numeric content;
+     * cellname must be valid and the cell must not be empty.
+     *
+     */
+    void setNumValue(std::string& cellname, double newNumData);
+
+    /**
+     * Method: getStrData(std:;string& cellname)
+     * Usage:  getStrData(cellname);
+     * ----------------------------
+     * Return the string content of the cell.
+     * Usually used by the SSview part.
+     */
+    std::string getStrData(std::string& cellname) const;
+
+    /**
+     * Method: setStrData
+     * Usage: Model.setStrData(cellname, newStrData);
+     * ----------------------------------------------
+     * Preconditions:
+     * Only Called by the clients when the cell is to accept
+     *  a string content;
+     * Cellname must be valid and the cell must not be empty.
+     */
+    void setStrData(std::string& cellname, std::string& newStrData);
+
+    /**
+     * Method： addCommand
+     * Usage： model.addCommand(newCommand);
+     * ------------------------------------
+     * Add the current command to the model for possible output.
+     */
+    void addCommand(std::string newCommand);
+
+    /**
+     * Method: rmLastCommand()
+     * Usagae: modle.rmLastCommand();
+     * --------------------------------
+     * Used by the controler to rm the incorrect command.
+     */
+    void rmLastCommand();
+
+    /**
+     * Method: getCell
+     * Usage: Cell* cell = model.getCell(cellname);
+     * ---------------------------------------------
+     * Preconditions： cellname must be valid
+     * return the cell pointer
+     * if the cell is empty creat empty cell pointer.
+     */
+    Cell* getCell(const std::string& cellname);
+
+    /**
+     * Method: rmCell
+     * Usage: model.rmCell(cellname);
+     * ------------------------------
+     * rm the cell and delete the heap memory.
+     */
+    void rmCell(std::string& cellname);
+
+    /**
+     * Method: show
+     * Usage: model.show()
+     * ----------------------
+     * Show the nonEmptyCells to the current SSview Object.
+     */
+    void show();
+
 	
 private:
-    /* For you to decide */
+    int numRows;
+    int numCols;
+    HashMap<std::string, Cell*> nonEmptyCells;
+    Vector<std::string> commands;
+    SSView* view;
 };
 

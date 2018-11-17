@@ -75,7 +75,11 @@ void SSView::displayEmptySpreadsheet() {
 	repaint();
     setRepaintImmediately(true);
 }
-  	  	
+
+void SSView::displayCell(Cell *cell, bool highligthPause){
+    displayCell(cell->getCellName(), cell->getStrData(), highligthPause);
+}
+
 void SSView::displayCell(const string& cellname, 
                          const string& txt, bool highlightPause) {
 	drawOneCell(cellname, txt, RightAligned, 

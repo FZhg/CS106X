@@ -8,6 +8,7 @@
 #pragma once
 #include <string>
 #include "gwindow.h"
+#include "cell.h"
 
 /*********************************************************
  * NOTE: DO NOT EDIT THIS CLASS UNLESS DOING EXTENSIONS. *
@@ -56,8 +57,15 @@ public:
  * grid and row/col labels.  All cells are drawn empty.
  */
     
-  	void displayEmptySpreadsheet();
-  	
+    void displayEmptySpreadsheet();
+/**
+ * Member function: displayCell
+ * Usage: view.displayCell(cell);
+ * -------------------------------
+ * A wraper function to utilize the cell class
+ */
+    void displayCell(Cell* cell, bool highligthPause = false);
+
 /**
  * Member function: displayCell
  * Usage: view.displayCell(name, contents);

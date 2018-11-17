@@ -82,3 +82,12 @@ double stdev(const Vector<double>& values) {
 	return sqrt((values.size() * sumsquares - sum*sum)/(values.size() * values.size()));
 }
 
+std::string peekString(TokenScanner& scanner){
+    std::string result;
+    while(scanner.hasMoreTokens()){
+        result += scanner.nextToken();
+    }
+    scanner.setInput(result);
+    return result;
+}
+

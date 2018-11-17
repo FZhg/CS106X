@@ -7,6 +7,7 @@
  
 #pragma once
 #include "vector.h"
+#include "tokenscanner.h"
 
 /**
  * Type: location
@@ -71,4 +72,5 @@ double max(const Vector<double> & values);
 double min(const Vector<double> & values);
 double median(const Vector<double> & values);
 double stdev(const Vector<double> & values);
+std::string peekString(TokenScanner& scanner);
 
